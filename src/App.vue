@@ -1,7 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view />
+  <van-config-provider theme="dark">
+    <router-view />
+  </van-config-provider>
 </template>
 
 <style scoped></style>
