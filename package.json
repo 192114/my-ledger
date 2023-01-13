@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "date-fns": "^2.29.3",
     "vant": "^4.0.7",
     "vue": "^3.2.45",
     "vue-router": "4"

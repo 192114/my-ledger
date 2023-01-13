@@ -7,10 +7,10 @@ module.exports = {
   extends: [
     'eslint:recommended', // 使用推荐的eslint
     'plugin:vue/vue3-recommended', // 使用插件支持vue3
-    // 如果你没有安装第7步,以下两个包不要引入,否则报错
     'plugin:prettier/recommended',
     'eslint-config-prettier'
   ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 13,
     sourceType: 'module',
