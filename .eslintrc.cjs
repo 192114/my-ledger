@@ -2,17 +2,18 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true
+    node: true,
+    'vue/setup-compiler-macros': true
   },
   extends: [
-    'eslint:recommended', // 使用推荐的eslint
-    'plugin:vue/vue3-recommended', // 使用插件支持vue3
-    'plugin:prettier/recommended',
-    'eslint-config-prettier'
+    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended'
   ],
   parser: 'vue-eslint-parser',
   parserOptions: {
-    ecmaVersion: 13,
+    ecmaVersion: 'latest',
     sourceType: 'module',
     ecmaFeatures: {
       modules: true,
@@ -21,18 +22,7 @@ module.exports = {
     requireConfigFile: false,
     parser: '@typescript-eslint/parser'
   },
-  // eslint-plugin-vue
-  plugins: [
-    'vue', // 引入vue的插件 vue <==> eslint-plugin-vue
-    // 这个包需要安装了第7步的三个包再引入
-    'prettier' // 引入规范插件  prettier <==>  eslint-plugin-prettier
-  ],
-  globals: {
-    defineProps: 'readonly',
-    defineEmits: 'readonly',
-    defineExpose: 'readonly',
-    withDefaults: 'readonly'
-  },
+  plugins: ['vue', '@typescript-eslint'],
   // 这里时配置规则的,自己看情况配置
   rules: {
     semi: ['warn', 'never'], // 禁止尾部使用分号
