@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { CalendarDayItem } from 'vant'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-// import { format } from 'date-fns'
+import { isToday } from 'date-fns'
 
 const router = useRouter()
 
@@ -16,6 +17,29 @@ const onChangeYear = ({ selectedValues }: { selectedValues: string[] }) => {
   currentYear.value = selectedValues[0]
   datePickModalShow.value = false
 }
+
+const getMaxDate = () => {
+  const year = new Date().getFullYear().toString()
+
+  // 当年返回今日
+  if (currentYear.value === year) {
+    return new Date()
+  }
+
+  return new Date(`${currentYear.value}/12/31`)
+}
+
+const formatDay = (day: CalendarDayItem) => {
+  return {
+    ...day,
+    bottomInfo: '2030',
+    topInfo: isToday(day.date as Date) ? '今日' : ''
+  }
+}
+
+const onChooseDate = (val: Date) => {
+  console.log(val)
+}
 </script>
 <template>
   <!-- 头 -->
@@ -23,7 +47,7 @@ const onChangeYear = ({ selectedValues }: { selectedValues: string[] }) => {
     <template #left>
       <van-icon
         name="setting-o"
-        color="var(--van-text-color)"
+        color="var(--van-nav-bar-icon-color)"
         size="1.5em"
         @click="router.push('/setting')"
       />
@@ -33,10 +57,12 @@ const onChangeYear = ({ selectedValues }: { selectedValues: string[] }) => {
         {{ currentYear }}年
         <van-icon
           :name="datePickModalShow ? 'arrow-up' : 'arrow-down'"
-          color="var(--van-text-color)"
+          color="var(--van-nav-bar-icon-color)"
         />
       </div>
     </template>
+
+    <template #right> </template>
   </van-nav-bar>
 
   <!-- 日期内容 -->
@@ -47,7 +73,9 @@ const onChangeYear = ({ selectedValues }: { selectedValues: string[] }) => {
     :poppable="false"
     :show-confirm="false"
     :min-date="new Date(`${currentYear}/01/01`)"
-    :max-date="new Date(`${currentYear}/12/31`)"
+    :max-date="getMaxDate()"
+    :formatter="formatDay"
+    @select="onChooseDate"
   />
 
   <!-- 切换年份popup -->
@@ -64,7 +92,8 @@ const onChangeYear = ({ selectedValues }: { selectedValues: string[] }) => {
 </template>
 <style scoped>
 .calender-style {
-  margin-top: var(--van-nav-bar-height);
+  padding-top: var(--van-nav-bar-height);
   height: calc(100vh - var(--van-nav-bar-height));
+  color: var(--van-text-color);
 }
 </style>
