@@ -15,6 +15,7 @@ const datePickModalShow = ref(false)
 
 const currentBookDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const keyboardShow = ref<boolean>(false)
+const currentAmount = ref<string>('')
 
 const toggleDatepickModalShow = () => {
   datePickModalShow.value = !datePickModalShow.value
@@ -49,18 +50,28 @@ const formatDay = (day: CalendarDayItem) => {
 }
 
 const onChooseDate = (val: Date) => {
-  // console.log(val)
   currentBookDate.value = format(val, 'yyyy-MM-dd')
+  const current = ledgersStore.ledgersList.find(ledgerItem =>
+    isSameDay(new Date(ledgerItem.date), val)
+  )
+
+  if (current) {
+    currentAmount.value = current.amount
+  } else {
+    currentAmount.value = ''
+  }
+
   keyboardShow.value = true
 }
 
 const onSureBooking = async (val: string) => {
-  keyboardShow.value = false
   if (!val) {
     showFailToast('金额不能为空')
     return
   }
-  ledgersStore.createAndUpdateRecord(currentBookDate.value, val)
+  keyboardShow.value = false
+  // 等待confirm弹窗
+  await ledgersStore.createAndUpdateRecord(currentBookDate.value, val)
   ledgersStore.getListByYear(currentYear.value)
 }
 
@@ -122,6 +133,7 @@ onMounted(async () => {
   <BookKeeping
     :date="currentBookDate"
     :show="keyboardShow"
+    :default-value="currentAmount"
     @sure="onSureBooking"
     @cancel="keyboardShow = false"
   />

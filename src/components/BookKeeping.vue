@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, toRefs, defineProps, defineEmits } from 'vue'
+import { ref, toRefs, defineProps, defineEmits, watch } from 'vue'
 
 const props = defineProps<{
   date: string
   show: boolean
+  defaultValue: string
 }>()
 
 const emits = defineEmits<{
@@ -11,9 +12,12 @@ const emits = defineEmits<{
   (e: 'sure', value: string): void
 }>()
 
-const { date, show } = toRefs(props)
-
+const { date, show, defaultValue } = toRefs(props)
 const numberKeyboardInput = ref()
+
+watch(defaultValue, () => {
+  numberKeyboardInput.value = defaultValue.value
+})
 </script>
 
 <template>
