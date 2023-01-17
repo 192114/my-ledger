@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useGlobalStore } from '@/store'
 
+// 引入vant的函数式组件的style -> https://vant-contrib.gitee.io/vant/#/zh-CN/quickstart#4.-yin-ru-han-shu-zu-jian-de-yang-shi
+import 'vant/es/toast/style'
+import 'vant/es/dialog/style'
+import 'vant/es/notify/style'
+
 const globalStore = useGlobalStore()
 </script>
 
