@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGlobalStore } from '@/store'
+import { useGlobalStore } from '@/store/store/store'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

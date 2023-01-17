@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import type { CalendarDayItem } from 'vant'
-import { ref } from 'vue'
+import { type CalendarDayItem, showFailToast } from 'vant'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { isToday } from 'date-fns'
+import { isToday, format, isSameDay } from 'date-fns'
+
+import BookKeeping from '@/components/BookKeeping.vue'
+import { useLedgersStore } from '@/store'
 
 const router = useRouter()
+const ledgersStore = useLedgersStore()
 
 const currentYear = ref(new Date().getFullYear().toString())
 const datePickModalShow = ref(false)
+
+const currentBookDate = ref(format(new Date(), 'yyyy-MM-dd'))
+const keyboardShow = ref<boolean>(false)
 
 const toggleDatepickModalShow = () => {
   datePickModalShow.value = !datePickModalShow.value
@@ -16,6 +23,7 @@ const toggleDatepickModalShow = () => {
 const onChangeYear = ({ selectedValues }: { selectedValues: string[] }) => {
   currentYear.value = selectedValues[0]
   datePickModalShow.value = false
+  ledgersStore.getListByYear(selectedValues[0])
 }
 
 const getMaxDate = () => {
@@ -30,16 +38,36 @@ const getMaxDate = () => {
 }
 
 const formatDay = (day: CalendarDayItem) => {
+  const current = ledgersStore.ledgersList.find(ledgerItem =>
+    isSameDay(new Date(ledgerItem.date), day.date as Date)
+  )
   return {
     ...day,
-    bottomInfo: '2030',
+    bottomInfo: current?.amount ?? '',
     topInfo: isToday(day.date as Date) ? '今日' : ''
   }
 }
 
 const onChooseDate = (val: Date) => {
-  console.log(val)
+  // console.log(val)
+  currentBookDate.value = format(val, 'yyyy-MM-dd')
+  keyboardShow.value = true
 }
+
+const onSureBooking = async (val: string) => {
+  keyboardShow.value = false
+  if (!val) {
+    showFailToast('金额不能为空')
+    return
+  }
+  ledgersStore.createAndUpdateRecord(currentBookDate.value, val)
+  ledgersStore.getListByYear(currentYear.value)
+}
+
+// 初始化获取数据
+onMounted(async () => {
+  ledgersStore.getListByYear(currentYear.value)
+})
 </script>
 <template>
   <!-- 头 -->
@@ -89,6 +117,14 @@ const onChooseDate = (val: Date) => {
       @cancel="datePickModalShow = false"
     />
   </van-popup>
+
+  <!-- 记账组件 -->
+  <BookKeeping
+    :date="currentBookDate"
+    :show="keyboardShow"
+    @sure="onSureBooking"
+    @cancel="keyboardShow = false"
+  />
 </template>
 <style scoped>
 .calender-style {
