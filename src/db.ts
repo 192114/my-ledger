@@ -1,4 +1,6 @@
 import Dexie, { Table } from 'dexie'
+import { exportDB, importInto } from 'dexie-export-import'
+import { saveAs } from 'file-saver'
 
 export interface Ledger {
   id?: number
@@ -8,16 +10,23 @@ export interface Ledger {
 }
 
 export class MySubClassedDexie extends Dexie {
-  // 'friends' is added by dexie when declaring the stores()
-  // We just tell the typing system this is the case
   ledgers!: Table<Ledger>
 
   constructor() {
     super('ledgerDatabase')
     this.version(1).stores({
-      ledgers: '++id, &date, amount, recordTime' // Primary key and indexed props
+      ledgers: '++id, &date, amount, recordTime'
     })
   }
 }
 
 export const db = new MySubClassedDexie()
+
+export const exportDBToFile = async () => {
+  const blob = await exportDB(db)
+  saveAs(blob, 'database.json')
+}
+
+export const importDBFromFile = async (blob: Blob) => {
+  await importInto(db, blob)
+}

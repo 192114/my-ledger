@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs, defineProps, defineEmits, watch } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 
 const props = defineProps<{
   date: string
