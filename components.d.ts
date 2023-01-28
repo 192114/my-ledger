@@ -16,6 +16,8 @@ declare module '@vue/runtime-core' {
     VanCalendar: typeof import('vant/es')['Calendar']
     VanCell: typeof import('vant/es')['Cell']
     VanCellGroup: typeof import('vant/es')['CellGroup']
+    VanCircle: typeof import('vant/es')['Circle']
+    VanCol: typeof import('vant/es')['Col']
     VanConfigProvider: typeof import('vant/es')['ConfigProvider']
     VanDatePicker: typeof import('vant/es')['DatePicker']
     VanField: typeof import('vant/es')['Field']
@@ -24,6 +26,8 @@ declare module '@vue/runtime-core' {
     VanNumberKeyboard: typeof import('vant/es')['NumberKeyboard']
     VanOverlay: typeof import('vant/es')['Overlay']
     VanPopup: typeof import('vant/es')['Popup']
+    VanRow: typeof import('vant/es')['Row']
+    VanSpace: typeof import('vant/es')['Space']
     VanSwitch: typeof import('vant/es')['Switch']
     VanUploader: typeof import('vant/es')['Uploader']
   }

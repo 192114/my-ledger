@@ -33,6 +33,7 @@ export const useLedgersStore = defineStore('ledgers', {
     async getListByYear(year: string) {
       try {
         this.ledgersList = await db.ledgers
+          .orderBy('date')
           .filter(item => `${new Date(item.date).getFullYear()}` === year)
           .toArray()
       } catch (error) {
@@ -79,6 +80,29 @@ export const useLedgersStore = defineStore('ledgers', {
         return error
       }
     }
+  }
+})
+
+type StatisticsStoreType = {
+  dateRange: string
+  total: string
+  max: string
+  min: string
+  dataList: Ledger[]
+}
+
+export const useStatisticsStore = defineStore('statistics', {
+  state: (): StatisticsStoreType => {
+    return {
+      dateRange: '',
+      total: '',
+      max: '',
+      min: '',
+      dataList: []
+    }
+  },
+  actions: {
+    getAllData: async () => {}
   }
 })
 

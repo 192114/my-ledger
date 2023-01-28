@@ -87,7 +87,7 @@ onMounted(async () => {
       <van-icon
         name="setting-o"
         color="var(--van-nav-bar-icon-color)"
-        size="1.5em"
+        size="1.8em"
         @click="router.push('/setting')"
       />
     </template>
@@ -101,7 +101,14 @@ onMounted(async () => {
       </div>
     </template>
 
-    <template #right> </template>
+    <template #right>
+      <van-icon
+        name="more-o"
+        color="var(--van-nav-bar-icon-color)"
+        size="1.8em"
+        @click="router.push('/statistics')"
+      />
+    </template>
   </van-nav-bar>
 
   <!-- 日期内容 -->

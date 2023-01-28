@@ -9,10 +9,12 @@ declare module 'vue-router' {
 
 const Home = () => import('@/pages/HomePage.vue')
 const Setting = () => import('@/pages/SettingPage.vue')
+const Statistics = () => import('@/pages/StatisticsPage.vue')
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/setting', component: Setting }
+  { path: '/setting', component: Setting },
+  { path: '/statistics', component: Statistics }
 ]
 
 const router = createRouter({
@@ -30,6 +32,16 @@ router.afterEach((to, from) => {
   // setting page -> home page
   if (to.path === '/' && from.path === '/setting') {
     to.meta.transition = 'setting-out'
+  }
+
+  // home page -> statistics page
+  if (to.path === '/statistics' && from.path === '/') {
+    to.meta.transition = 'statistics-in'
+  }
+
+  // statistics page -> home page
+  if (to.path === '/' && from.path === '/statistics') {
+    to.meta.transition = 'statistics-out'
   }
 })
 

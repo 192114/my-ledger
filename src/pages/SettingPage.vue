@@ -39,7 +39,6 @@ const importDatabase = async (file: UploaderFileListItem | UploaderFileListItem[
     }
   } catch (error) {
     showFailToast(`${error}`)
-    console.log(error)
     throw error
   }
 }
