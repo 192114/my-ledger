@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useGlobalStore } from '@/store'
 import { useRouter } from 'vue-router'
-import { showFailToast, showToast, type } from 'vant'
+import { showFailToast, showToast, type UploaderFileListItem } from 'vant'
 import { exportDBToFile, importDBFromFile } from '@/db'
 
 const router = useRouter()
@@ -19,22 +19,27 @@ const exportDatabase = async () => {
   }
 }
 
-const beforeRead = (file: File) => {
-  if (file.type !== 'application/json') {
+const beforeRead = (file: File | File[]) => {
+  if (!Array.isArray(file) && file.type !== 'application/json') {
     showToast('请上传 json 格式文件')
     return false
   }
   return true
 }
 
-const importDatabase = async (file: UploaderFileListItem) => {
-  console.log(file)
+const importDatabase = async (file: UploaderFileListItem | UploaderFileListItem[]) => {
+  if (Array.isArray(file)) {
+    return
+  }
   try {
     if (file.file) {
+      // await db.delete()
       await importDBFromFile(file.file)
+      showToast('上传成功')
     }
   } catch (error) {
     showFailToast(`${error}`)
+    console.log(error)
     throw error
   }
 }

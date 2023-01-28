@@ -28,5 +28,6 @@ export const exportDBToFile = async () => {
 }
 
 export const importDBFromFile = async (blob: Blob) => {
+  await db.ledgers.clear()
   await importInto(db, blob)
 }
