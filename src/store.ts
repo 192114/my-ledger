@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { showFailToast, showConfirmDialog } from 'vant'
+import Big from 'big.js'
 import { type Ledger, db } from '@/db'
 
 type GlobalStateType = {
@@ -83,11 +84,13 @@ export const useLedgersStore = defineStore('ledgers', {
   }
 })
 
+type MinAndMaxItemType = { date: string[]; value: string }
+
 type StatisticsStoreType = {
   dateRange: string
   total: string
-  max: string
-  min: string
+  max: MinAndMaxItemType | null
+  min: MinAndMaxItemType | null
   dataList: Ledger[]
 }
 
@@ -96,13 +99,55 @@ export const useStatisticsStore = defineStore('statistics', {
     return {
       dateRange: '',
       total: '',
-      max: '',
-      min: '',
+      max: null,
+      min: null,
       dataList: []
     }
   },
   actions: {
-    getAllData: async () => {}
+    async getAllData(year: string) {
+      try {
+        this.dataList = await db.ledgers
+          .orderBy('date')
+          .filter(item => `${new Date(item.date).getFullYear()}` === year)
+          .toArray()
+
+        if (this.dataList.length > 0 && this.dataList.length <= 1) {
+          this.dateRange = this.dataList[0].date
+        } else if (this.dataList.length > 1) {
+          this.dateRange = `${this.dataList[0].date} 至 ${
+            this.dataList[this.dataList.length - 1].date
+          }`
+        }
+
+        let maxTemp: MinAndMaxItemType | null = null
+        let minTemp: MinAndMaxItemType | null = null
+        let totalAmount = new Big(0)
+        for (let i = 0; i < this.dataList.length; i++) {
+          const current = this.dataList[i]
+          if (!maxTemp || maxTemp.value < current.amount) {
+            maxTemp = { date: [current.date], value: current.amount }
+          } else if (maxTemp && maxTemp.value === current.amount) {
+            maxTemp.date.push(current.date)
+          }
+
+          if (!minTemp || minTemp.value > current.amount) {
+            minTemp = { date: [current.date], value: current.amount }
+          } else if (minTemp && minTemp.value === current.amount) {
+            minTemp.date.push(current.date)
+          }
+
+          totalAmount = totalAmount.add(current.amount)
+        }
+
+        this.max = maxTemp
+        this.min = minTemp
+        this.total = totalAmount.toString()
+      } catch (error) {
+        showFailToast(`${error}`)
+        return error
+      }
+    }
   }
 })
 
